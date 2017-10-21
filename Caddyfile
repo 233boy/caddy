@@ -1,0 +1,9 @@
+233abc.com {
+    gzip
+    basicauth / 233abc 233abc.com
+    header / Strict-Transport-Security "max-age=31536000;"
+    tls email@qq.com
+    proxy / https://www.google.com {
+	    except /robots.txt
+    }
+}
