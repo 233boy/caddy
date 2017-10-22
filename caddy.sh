@@ -227,7 +227,7 @@ unistall() {
 		echo -e "
 		$red 大胸弟...你貌似毛有安装 Caddy ....卸载个鸡鸡哦...$none
 
-		备注...卸载仅支持使用我(233abc.com)提供的 Caddy 一键反代谷歌安装脚本
+		备注...仅支持卸载使用我(233abc.com)提供的 Caddy 一键反代谷歌安装脚本
 		" && exit 1
 	fi
 }
