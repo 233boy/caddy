@@ -290,6 +290,8 @@ while :; do
 	echo
 	echo "........... Caddy 一键反代谷歌安装脚本 by 233abc.com .........."
 	echo
+	echo "帮助说明: https://233abc.com/post/21/"
+	echo
 	echo " 1. 安装"
 	echo
 	echo " 2. 卸载"
