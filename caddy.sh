@@ -277,6 +277,23 @@ pause() {
 get_ip() {
 	ip=$(curl -s ipinfo.io/ip)
 }
+only_install_caddy(){
+    install_caddy
+    open_port
+    echo "#https://caddyserver.com/docs" > /etc/caddy/Caddyfile
+    clear
+    echo
+    echo "---------- 安装完成 -------------"
+    echo
+    echo -e "$yellow Caddy 已安装完成...但还没有启动$none"
+    echo
+    echo -e "$yellow 请修改${cyan} /etc/caddy/Caddyfile $yellow文件$none"
+    echo
+    echo -e "$yellow 然后使用${cyan} systemctl start caddy $yellow启动 Caddy$none"
+    echo
+    echo -e "$yellow Caddy 帮助文档: ${cyan}https://caddyserver.com/docs$none"
+    echo
+}
 install() {
 	ask
 	install_info
@@ -294,15 +311,21 @@ while :; do
 	echo
 	echo " 1. 安装"
 	echo
-	echo " 2. 卸载"
+	echo " 2. 仅安装 Caddy..不配置反代"
 	echo
-	read -p "请选择[1-2]:" choose
+	echo " 3. 卸载"
+	echo
+	read -p "请选择[1-3]:" choose
 	case $choose in
 	1)
 		install
 		break
 		;;
 	2)
+		only_install_caddy
+		break
+		;;
+	3)
 		unistall
 		break
 		;;
