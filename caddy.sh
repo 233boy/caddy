@@ -278,21 +278,21 @@ get_ip() {
 	ip=$(curl -s ipinfo.io/ip)
 }
 only_install_caddy(){
-    install_caddy
-    open_port
-    echo "#https://caddyserver.com/docs" > /etc/caddy/Caddyfile
-    clear
-    echo
-    echo "---------- 安装完成 -------------"
-    echo
-    echo -e "$yellow Caddy 已安装完成...但还没有启动$none"
-    echo
-    echo -e "$yellow 请修改${cyan} /etc/caddy/Caddyfile $yellow文件$none"
-    echo
-    echo -e "$yellow 然后使用${cyan} systemctl start caddy $yellow启动 Caddy$none"
-    echo
-    echo -e "$yellow Caddy 帮助文档: ${cyan}https://caddyserver.com/docs$none"
-    echo
+	install_caddy
+	open_port
+	echo "#https://caddyserver.com/docs" > /etc/caddy/Caddyfile
+	clear
+	echo
+	echo "---------- 安装完成 -------------"
+	echo
+	echo -e "$yellow Caddy 已安装完成...但还没有启动$none"
+	echo
+	echo -e "$yellow 请修改${cyan} /etc/caddy/Caddyfile $yellow文件$none"
+	echo
+	echo -e "$yellow 然后使用${cyan} systemctl start caddy $yellow启动 Caddy$none"
+	echo
+	echo -e "$yellow Caddy 帮助文档: ${cyan}https://caddyserver.com/docs$none"
+	echo
 }
 install() {
 	ask
