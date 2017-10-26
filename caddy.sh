@@ -232,7 +232,7 @@ unistall() {
 	fi
 }
 unistall_caddy() {
-	caddy_pid=$(ps ux | pgrep "caddy")
+	caddy_pid=$(pgrep "caddy")
 	while :; do
 		echo
 		read -p "是否卸载[Y/N]:" unistall_caddy_ask
