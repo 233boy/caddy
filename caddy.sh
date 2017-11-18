@@ -305,9 +305,9 @@ install() {
 clear
 while :; do
 	echo
-	echo "........... Caddy 一键反代谷歌安装脚本 by 233abc.com .........."
+	echo "........... Caddy 一键反代谷歌安装脚本 by 233blog.com .........."
 	echo
-	echo "帮助说明: https://233abc.com/post/21/"
+	echo "帮助说明: https://233blog.com/post/13/"
 	echo
 	echo " 1. 安装"
 	echo
