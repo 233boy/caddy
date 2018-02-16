@@ -131,7 +131,11 @@ install_info() {
 	pause
 }
 domain_check() {
-	$cmd install dnsutils -y
+	if [[ $cmd == "yum" ]]; then
+		yum install bind-utils -y
+	else
+		$cmd install dnsutils -y
+	fi
 	test_domain=$(dig $domain +short)
 	if [[ $test_domain != $ip ]]; then
 		echo -e "
