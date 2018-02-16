@@ -45,7 +45,7 @@ ask() {
 	while :; do
 		echo
 		echo -e "请输入一个 $magenta正确的域名$none，一定一定一定要正确，不！能！出！错！"
-		read -p "(例如：233abc.com): " domain
+		read -p "(例如：233blog.com): " domain
 		[ -z "$domain" ] && error && continue
 		echo
 		echo
@@ -88,8 +88,8 @@ ask() {
 	done
 
 	while :; do
-		read -p "$(echo -e "请输入登录用户名...(默认用户名: ${magenta}233abc$none)"): " username
-		[ -z "$username" ] && username="233abc"
+		read -p "$(echo -e "请输入登录用户名...(默认用户名: ${magenta}233blog$none)"): " username
+		[ -z "$username" ] && username="233blog"
 		echo
 		echo
 		echo -e "$yellow 用户名 = $cyan$username$none"
@@ -100,8 +100,8 @@ ask() {
 	done
 
 	while :; do
-		read -p "$(echo -e "请输入用户密码...(默认密码: ${magenta}233abc.com$none)"): " userpass
-		[ -z "$userpass" ] && userpass="233abc.com"
+		read -p "$(echo -e "请输入用户密码...(默认密码: ${magenta}233blog.com$none)"): " userpass
+		[ -z "$userpass" ] && userpass="233blog.com"
 		echo
 		echo
 		echo -e "$yellow 用户密码 = $cyan$userpass$none"
@@ -195,18 +195,15 @@ del_port() {
 }
 config_caddy() {
 	email=$(shuf -i1-10000000000 -n1)
-	Caddyfile_link="https://raw.githubusercontent.com/233abc/caddy/master/Caddyfile"
-	Caddyfile_tmp="/tmp/Caddyfile_tmp"
-	Caddyfile="/etc/caddy/Caddyfile"
-	if ! wget --no-check-certificate -O "$Caddyfile_tmp" $Caddyfile_link; then
-		echo -e "
-        $red 下载 Caddy 配置文件失败啦..可能是你的小鸡鸡的网络太辣鸡了...重新安装也许能解决$none
-        " && exit 1
-	fi
-	cp -f $Caddyfile_tmp $Caddyfile
-	sed -i "1s/233abc.com/$domain/; 3s/233abc/$username/; 3s/233abc.com/$userpass/; 5s/email/$email/" $Caddyfile
-	echo -e "User-agent: *\nDisallow: /" >/etc/caddy/robots.txt
-	rm -rf $Caddyfile_tmp
+		cat >/etc/caddy/Caddyfile <<-EOF
+$domain {
+    gzip
+    basicauth / $username $userpass
+    header / Strict-Transport-Security "max-age=31536000;"
+    tls ${email}@gmail.com
+    proxy / https://www.google.com.hk
+}
+	EOF
 	open_port
 	systemctl restart caddy
 }
@@ -215,13 +212,13 @@ show_config_info() {
 	echo
 	echo "---------- 安装完成 -------------"
 	echo
-	echo -e "$yellow 你的域名 = $cyan$domain$none"
+	echo -e "$yellow 你的域名 = ${cyan}https://$domain$none"
 	echo
 	echo -e "$yellow 用户名 = ${cyan}$username$none"
 	echo
 	echo -e "$yellow 密码 = ${cyan}$userpass$none"
 	echo
-	echo " 帮助或反馈: https://233abc.com/post/21/"
+	echo " 帮助或反馈: https://233blog.com/post/21/"
 	echo
 }
 unistall() {
@@ -231,7 +228,7 @@ unistall() {
 		echo -e "
 		$red 大胸弟...你貌似毛有安装 Caddy ....卸载个鸡鸡哦...$none
 
-		备注...仅支持卸载使用我(233abc.com)提供的 Caddy 一键反代谷歌安装脚本
+		备注...仅支持卸载使用我(233blog.com)提供的 Caddy 一键反代谷歌安装脚本
 		" && exit 1
 	fi
 }
@@ -281,6 +278,19 @@ pause() {
 get_ip() {
 	ip=$(curl -s ipinfo.io/ip)
 }
+try_enable_bbr() {
+	if [[ $(uname -r | cut -b 1) -eq 4 ]]; then
+		case $(uname -r | cut -b 3-4) in
+		9. | [1-9][0-9])
+			sed -i '/net.ipv4.tcp_congestion_control/d' /etc/sysctl.conf
+			sed -i '/net.core.default_qdisc/d' /etc/sysctl.conf
+			echo "net.ipv4.tcp_congestion_control = bbr" >>/etc/sysctl.conf
+			echo "net.core.default_qdisc = fq" >>/etc/sysctl.conf
+			sysctl -p >/dev/null 2>&1			
+			;;
+		esac
+	fi
+}
 only_install_caddy(){
 	install_caddy
 	open_port
@@ -306,6 +316,7 @@ install() {
 	config_caddy
 	show_config_info
 }
+try_enable_bbr
 clear
 while :; do
 	echo
