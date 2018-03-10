@@ -221,9 +221,9 @@ show_config_info() {
 	echo " 帮助或反馈: https://233blog.com/post/21/"
 	echo
 }
-unistall() {
+uninstall() {
 	if [[ -f /usr/local/bin/caddy && -f /etc/caddy/Caddyfile ]] && [[ -f /lib/systemd/system/caddy.service ]]; then
-		unistall_caddy
+		uninstall_caddy
 	else
 		echo -e "
 		$red 大胸弟...你貌似毛有安装 Caddy ....卸载个鸡鸡哦...$none
@@ -232,15 +232,15 @@ unistall() {
 		" && exit 1
 	fi
 }
-unistall_caddy() {
+uninstall_caddy() {
 	caddy_pid=$(pgrep "caddy")
 	while :; do
 		echo
-		read -p "是否卸载[Y/N]:" unistall_caddy_ask
-		if [ -z $unistall_caddy_ask ]; then
+		read -p "是否卸载[Y/N]:" uninstall_caddy_ask
+		if [ -z $uninstall_caddy_ask ]; then
 			error
 		else
-			if [[ $unistall_caddy_ask == [Yy] ]]; then
+			if [[ $uninstall_caddy_ask == [Yy] ]]; then
 				if [[ $caddy_pid ]]; then
 					systemctl stop caddy
 				fi
@@ -253,7 +253,7 @@ unistall_caddy() {
 				echo -e "$green 卸载完成啦.... $none"
 				echo
 				break
-			elif [[ $unistall_caddy_ask == [Nn] ]]; then
+			elif [[ $uninstall_caddy_ask == [Nn] ]]; then
 				echo
 				echo -e "$red....已取消卸载....$none"
 				echo
@@ -341,7 +341,7 @@ while :; do
 		break
 		;;
 	3)
-		unistall
+		uninstall
 		break
 		;;
 	*)
