@@ -31,9 +31,9 @@ else
 fi
 
 if [[ $sys_bit == "i386" || $sys_bit == "i686" ]]; then
-	caddy_download_link="https://caddyserver.com/download/linux/386"
+	caddy_download_link="https://caddyserver.com/download/linux/386?license=personal"
 elif [[ $sys_bit == "x86_64" ]]; then
-	caddy_download_link="https://caddyserver.com/download/linux/amd64"
+	caddy_download_link="https://caddyserver.com/download/linux/amd64?license=personal"
 else
 	echo -e " 
     哈哈……这个 ${red}辣鸡脚本${none} 不支持你的系统。 ${yellow}(-_-) ${none}
