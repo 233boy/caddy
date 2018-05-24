@@ -112,7 +112,35 @@ ask() {
 	done
 
 }
+# plugins_ask() {
+# 	echo
+# 	while :; do
+# 		echo -e "是否 添加 Caddy 插件 [${magenta}Y/N$none]"
+# 		read -p "$(echo -e "(默认: [${cyan}N$none]):")" plugins_add
+# 		[[ -z $plugins_add ]] && plugins_add="n"
 
+# 		case $plugins_add in
+# 		Y | y)
+# 			plugins_config
+# 			break
+# 			;;
+# 		N | n)
+# 			echo
+# 			echo
+# 			echo -e "$yellow 添加 Caddy 插件 = $cyan不想添加$none"
+# 			echo "----------------------------------------------------------------"
+# 			echo
+# 			break
+# 			;;
+# 		*)
+# 			error
+# 			;;
+# 		esac
+# 	done
+# }
+# plugins_config(){
+
+# }
 install_info() {
 	clear
 	echo
@@ -131,12 +159,7 @@ install_info() {
 	pause
 }
 domain_check() {
-	if [[ $cmd == "yum" ]]; then
-		yum install bind-utils -y
-	else
-		$cmd install dnsutils -y
-	fi
-	test_domain=$(dig $domain +short)
+	test_domain=$(ping $domain -c 1 | grep -oE -m1 "([0-9]{1,3}\.){3}[0-9]{1,3}")
 	if [[ $test_domain != $ip ]]; then
 		echo -e "
 		$red 检测域名解析错误....$none
@@ -150,8 +173,13 @@ domain_check() {
 install_caddy() {
 	local caddy_tmp="/tmp/install_caddy/"
 	local caddy_tmp_file="/tmp/install_caddy/caddy.tar.gz"
+	[[ -d $caddy_tmp ]] && rm -rf $caddy_tmp
+	[[ -f $caddy_tmp_file ]] && rm -rf $caddy_tmp_file
 	mkdir -p $caddy_tmp
-	$cmd install wget -y
+	if [[ ! $(command -v wget) ]]; then
+		$cmd update -y
+		$cmd install wget -y
+	fi
 	if ! wget --no-check-certificate -O "$caddy_tmp_file" $caddy_download_link; then
 		echo -e "
         $red 下载 Caddy 失败啦..可能是你的小鸡鸡的网络太辣鸡了...重新安装也许能解决$none
@@ -195,7 +223,7 @@ del_port() {
 }
 config_caddy() {
 	email=$(shuf -i1-10000000000 -n1)
-		cat >/etc/caddy/Caddyfile <<-EOF
+	cat >/etc/caddy/Caddyfile <<-EOF
 $domain {
     gzip
     basicauth / $username $userpass
@@ -286,15 +314,15 @@ try_enable_bbr() {
 			sed -i '/net.core.default_qdisc/d' /etc/sysctl.conf
 			echo "net.ipv4.tcp_congestion_control = bbr" >>/etc/sysctl.conf
 			echo "net.core.default_qdisc = fq" >>/etc/sysctl.conf
-			sysctl -p >/dev/null 2>&1			
+			sysctl -p >/dev/null 2>&1
 			;;
 		esac
 	fi
 }
-only_install_caddy(){
+only_install_caddy() {
 	install_caddy
 	open_port
-	echo "#https://caddyserver.com/docs" > /etc/caddy/Caddyfile
+	echo "#https://caddyserver.com/docs" >/etc/caddy/Caddyfile
 	clear
 	echo
 	echo "---------- 安装完成 -------------"
